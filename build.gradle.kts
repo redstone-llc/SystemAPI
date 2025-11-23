@@ -21,8 +21,6 @@ repositories {
 
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
     strictMaven("https://maven.terraformersmc.com/", "Terraformers")
-    strictMaven("https://maven.isxander.dev/releases", "Xander Maven")
-    strictMaven("https://maven.siphalor.de/", "Siphalor's Maven")
 
     strictMaven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1", "DevAuth")
 }
@@ -41,9 +39,6 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
 
     modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_language_kotlin")}")
-    modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
-    modImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}")
-    include(modImplementation("de.siphalor.amecs-api:amecs-api-mc${stonecutter.current.version}:${property("deps.amecs")}")!!)
 
     implementation("com.github.shynixn.mccoroutine:mccoroutine-fabric-api:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-fabric-core:2.22.0")
@@ -92,8 +87,7 @@ tasks {
             "version" to project.property("mod.version"),
             "minecraft" to project.property("mod.mc_dep"),
             "fabric_loader" to project.property("deps.fabric_loader"),
-            "fabric_language_kotlin" to project.property("deps.fabric_language_kotlin"),
-            "yacl" to project.property("deps.yacl")
+            "fabric_language_kotlin" to project.property("deps.fabric_language_kotlin")
         )
 
         filesMatching("fabric.mod.json") { expand(props) }
