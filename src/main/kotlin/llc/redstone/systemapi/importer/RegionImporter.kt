@@ -79,7 +79,7 @@ internal class RegionImporter(override var name: String) : Region {
         for (pvpSetting in keys) {
             val setting = MenuUtils.findSlot(MC.currentScreen as GenericContainerScreen, pvpSetting.item)
                 ?: error("Couldn't find slot for $pvpSetting")
-            when (setting.stack.item) {
+            when (setting.stack.item) { //FIXME: Cant it also be a stone button?
                 Items.LIME_DYE -> map.putIfAbsent(pvpSetting, true)
                 Items.LIGHT_GRAY_DYE -> map.putIfAbsent(pvpSetting, false)
             }
@@ -96,7 +96,7 @@ internal class RegionImporter(override var name: String) : Region {
         for (pvpSetting in keys) {
             val settingItem = MenuUtils.findSlot(MC.currentScreen as GenericContainerScreen, pvpSetting.item)
                 ?: error("Couldn't find slot for $pvpSetting")
-            val settingValue = when (settingItem.stack.item) {
+            val settingValue = when (settingItem.stack.item) { //FIXME: Cant it also be a stone button?
                 Items.LIME_DYE -> true
                 Items.LIGHT_GRAY_DYE -> false
                 else -> null

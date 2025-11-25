@@ -1,8 +1,7 @@
-package dev.wekend.housingtoolbox.feature.importer
+package llc.redstone.systemapi.importer
 
 import llc.redstone.systemapi.api.Event
 import llc.redstone.systemapi.data.Action
-import llc.redstone.systemapi.importer.ActionInteraction
 import llc.redstone.systemapi.util.CommandUtils
 import llc.redstone.systemapi.util.MenuUtils
 

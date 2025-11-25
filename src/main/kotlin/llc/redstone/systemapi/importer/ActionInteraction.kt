@@ -107,7 +107,7 @@ class ActionInteraction(val title: String) {
                     List::class -> {
                         val value = value as List<*>
                         if (value.isEmpty()) continue
-                        //Then we assume they all are actions
+                        //if the first entry is an action then we assume they all are actions
                         if (value.first() is Action) {
                             val actions = value.filterIsInstance<Action>()
                             if (actions.size != value.size) error("List contains non-action entries")
