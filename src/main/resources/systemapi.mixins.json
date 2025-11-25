@@ -4,7 +4,8 @@
   "package": "llc.redstone.systemapi.mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [
-
+    "ClientPlayNetworkHandlerMixin",
+    "ScreenRenderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

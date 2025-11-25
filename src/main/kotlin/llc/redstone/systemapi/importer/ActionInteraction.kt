@@ -76,7 +76,7 @@ class ActionInteraction(val title: String) {
 
                 //Make sure we are in the right gui before continuing
                 MenuUtils.onOpen("Action Settings")
-                val gui = MC.currentScreen as? GenericContainerScreen ?: return
+                val gui = MC.currentScreen as? GenericContainerScreen ?: error("Could not cast current screen to GenericContainerScreen")
 
                 //Place in the gui to click
                 val slotIndex = slots[index]!!
@@ -109,14 +109,18 @@ class ActionInteraction(val title: String) {
                         if (value.isEmpty()) continue
                         //Then we assume they all are actions
                         if (value.first() is Action) {
+                            val actions = value.filterIsInstance<Action>()
+                            if (actions.size != value.size) error("List contains non-action entries")
                             MenuUtils.clickMenuSlot(MenuSlot(null, null, slotIndex))
-                            ActionInteraction("Edit Actions").addActions(value as List<Action>)
+                            ActionInteraction("Edit Actions").addActions(actions)
                             MenuUtils.onOpen("Edit Actions")
                             MenuUtils.clickMenuSlot(MenuItems.BACK)
                             MenuUtils.onOpen("Action Settings")
                         } else if (value.first() is Condition) {
+                            val conditions = value.filterIsInstance<Condition>()
+                            if (conditions.size != value.size) error("List contains non-condition entries")
                             MenuUtils.clickMenuSlot(MenuSlot(null, null, slotIndex))
-                            ConditionInteraction.addConditions(value as List<Condition>)
+                            ConditionInteraction.addConditions(conditions)
                             MenuUtils.onOpen("Edit Conditions")
                             MenuUtils.clickMenuSlot(MenuItems.BACK)
                             MenuUtils.onOpen("Action Settings")

@@ -4,7 +4,6 @@ import kotlinx.coroutines.delay
 import llc.redstone.systemapi.SystemAPI.MC
 import llc.redstone.systemapi.api.Command
 import llc.redstone.systemapi.data.Action
-import llc.redstone.systemapi.importer.ActionInteraction
 import llc.redstone.systemapi.util.CommandUtils
 import llc.redstone.systemapi.util.CommandUtils.getTabCompletions
 import llc.redstone.systemapi.util.ItemUtils.loreLine

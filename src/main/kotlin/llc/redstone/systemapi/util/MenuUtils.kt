@@ -62,7 +62,7 @@ object MenuUtils {
             ItemStackHash.EMPTY
         )
 
-        MC.networkHandler?.sendPacket(pkt)
+        MC.networkHandler?.sendPacket(pkt) ?: error("Failed to send click packet")
     }
 
     fun interactionClick(gui: HandledScreen<*>, slot: Int, button: Int = 0) {
