@@ -163,7 +163,7 @@ class ActionInteraction(val title: String) {
 
                         val current = stack.loreLine(true) { str -> str.contains("&a") || str.contains("&c") } ?: continue
                         val currentHolder = entries.find { current.contains(it.key) }
-                        val currentIndex = if (currentHolder != null ) entries.indexOf(currentHolder) + 1 else 0
+                        val currentIndex = if (currentHolder != null) entries.indexOf(currentHolder) + 1 else 0
                         if (currentHolder != keyed) {
                             val clicks = holderIndex - currentIndex
 
