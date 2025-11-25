@@ -15,17 +15,17 @@
   },
   "license": "LGPL-3.0",
   "environment": "client",
-  "icon": "assets/systemapi/icon.png",
+  "icon": "assets/systemsapi/icon.png",
   "entrypoints": {
     "client": [
       {
         "adapter": "kotlin",
-        "value": "llc.redstone.systemapi.SystemAPI"
+        "value": "llc.redstone.systemsapi.SystemsAPI"
       }
     ]
   },
   "mixins": [
-    "systemapi.mixins.json"
+    "systemsapi.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader}",

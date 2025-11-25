@@ -18,4 +18,4 @@ stonecutter {
     }
 }
 
-rootProject.name = "SystemAPI"
+rootProject.name = "SystemsAPI"

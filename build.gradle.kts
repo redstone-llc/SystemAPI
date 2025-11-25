@@ -72,7 +72,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             groupId = project.group.toString()
-            artifactId = "SystemAPI"
+            artifactId = "SystemsAPI"
             version = project.version.toString()
         }
     }
