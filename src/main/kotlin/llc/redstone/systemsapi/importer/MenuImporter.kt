@@ -60,12 +60,18 @@ internal class MenuImporter(override var title: String) : Menu {
     }
 
     override suspend fun getAllMenuElements(): Array<Menu.MenuElement> {
-        TODO("Not yet implemented")
+        MenuUtils.clickMenuSlot(MenuItems.EDIT_MENU_ELEMENTS)
+        val gui = MC.currentScreen as? GenericContainerScreen ?: error("[Menu $title] getAllMenuElements: Could not cast currentScreen as GenericContainerScreen.")
+        val numSlots = 9 * gui.screenHandler.rows
+        return Array(numSlots) { index -> MenuElementImporter(index) }
     }
 
     override suspend fun getMenuElement(index: Int): Menu.MenuElement {
         MenuUtils.clickMenuSlot(MenuItems.EDIT_MENU_ELEMENTS)
-        return MenuElementImporter(index) // TODO: is this right?
+        val gui = MC.currentScreen as? GenericContainerScreen ?: error("[Menu $title] getMenuElement: Could not cast currentScreen as GenericContainerScreen.")
+        val numSlots = 9 * gui.screenHandler.rows
+        if (index !in 0..<numSlots) error("[Menu $title] getMenuElement: Invalid index '$index'.")
+        return MenuElementImporter(index)
     }
 
     override suspend fun delete() {
@@ -91,7 +97,7 @@ internal class MenuImporter(override var title: String) : Menu {
         }
 
         override suspend fun getActionContainer(): ActionContainer? {
-            val gui = MC.currentScreen as? GenericContainerScreen ?: error("Could not cast currentScreen to GenericContainerScreen.")
+            val gui = MC.currentScreen as? GenericContainerScreen ?: error("[MenuElement] getActionContainer: Could not cast currentScreen as GenericContainerScreen.")
             val item = gui.screenHandler.inventory.getStack(slot)
             if (item.name.string == "Empty Slot" && item.get(DataComponentTypes.LORE)?.lines?.get(0)?.string == "Click to set item!") return null // Slot must first have an item before it can have an ActionContainer
             MenuUtils.packetClick(gui, slot, 0)
