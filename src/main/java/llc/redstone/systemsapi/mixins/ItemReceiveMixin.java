@@ -1,5 +1,6 @@
 package llc.redstone.systemsapi.mixins;
 
+import llc.redstone.systemsapi.importer.MenuImporter;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
@@ -15,6 +16,8 @@ public class ItemReceiveMixin {
         ItemStack stack = packet.getStack();
 
         if (stack.isEmpty()) return;
+
+        MenuImporter.MenuElementImporter.Companion.onItemRecieved(stack);
 
     }
 }

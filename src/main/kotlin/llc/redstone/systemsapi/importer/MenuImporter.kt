@@ -1,10 +1,14 @@
 package llc.redstone.systemsapi.importer
 
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import llc.redstone.systemsapi.SystemsAPI.MC
 import llc.redstone.systemsapi.api.Menu
 import llc.redstone.systemsapi.util.CommandUtils
 import llc.redstone.systemsapi.util.CommandUtils.getTabCompletions
+import llc.redstone.systemsapi.util.ItemUtils.giveItem
 import llc.redstone.systemsapi.util.MenuUtils
 import llc.redstone.systemsapi.util.MenuUtils.MenuSlot
 import llc.redstone.systemsapi.util.TextUtils
@@ -12,6 +16,9 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.concurrent.atomics.AtomicBoolean
 
 internal class MenuImporter(override var title: String) : Menu {
     private fun isMenuEditMenuOpen(): Boolean {
@@ -85,15 +92,44 @@ internal class MenuImporter(override var title: String) : Menu {
     }
 
     internal class MenuElementImporter(val slot: Int) : Menu.MenuElement {
+        companion object {
+            private var pending: CompletableDeferred<ItemStack>? = null
+
+            fun onItemRecieved(stack: ItemStack) {
+                pending?.let { current ->
+                    pending = null
+                    current.complete(stack)
+                }
+            }
+        }
+
         override suspend fun getItem(): ItemStack {
-            MenuUtils.packetClick(MC.currentScreen as GenericContainerScreen, slot, 1)
-            MenuUtils.packetClick(MC.currentScreen as GenericContainerScreen, 13, 0)
-            TODO("somehow wait until mixin receives item then return that item")
+            val gui = MC.currentScreen as? GenericContainerScreen ?: error("[getItem] Could not cast currentScreen as GenericContainerScreen.")
+            MenuUtils.packetClick(gui, slot, 1)
+
+            val deferred = CompletableDeferred<ItemStack>()
+            pending?.cancel()
+            pending = deferred
+
+            try {
+                MenuUtils.packetClick(gui, 13, 0)
+                return withTimeout(1_000) { deferred.await() }
+            } catch (e: TimeoutCancellationException) {
+                if (pending === deferred) pending = null
+                error("[getItem] Timed out waiting for item.")
+            } finally {
+                if (pending === deferred) pending = null
+            }
         }
 
         override suspend fun setItem(item: ItemStack) {
-            MenuUtils.packetClick(MC.currentScreen as GenericContainerScreen, slot, 1)
-            TODO("generate the item and click it")
+            val gui = MC.currentScreen as? GenericContainerScreen ?: error("[setItem] Could not cast currentScreen as GenericContainerScreen.")
+            val player = MC.player ?: error("[setItem] Could not get the player")
+            MenuUtils.packetClick(gui, slot, 1)
+            val oldStack = player.inventory.getStack(0)
+            item.giveItem(0)
+            MenuUtils.interactionClick(gui, 0)
+            oldStack.giveItem(0)
         }
 
         override suspend fun getActionContainer(): ActionContainer? {

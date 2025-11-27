@@ -1,14 +1,35 @@
 package llc.redstone.systemsapi.util
 
+import llc.redstone.systemsapi.SystemsAPI.MC
 import net.minecraft.client.MinecraftClient
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtOps
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket
+import net.minecraft.server.command.CommandManager
+import net.minecraft.world.GameMode
 import kotlin.jvm.optionals.getOrNull
 
 object ItemUtils {
+    fun ItemStack.giveItem(slot: Int) {
+        val player = MC.player ?: error("[giveItem] Could not get the player")
+        val gameMode = player.gameMode ?: error("[giveItem] Could not get the player's gamemode")
+        if (gameMode != GameMode.CREATIVE) CommandUtils.runCommand("/gmc")
+
+        val pkt = CreativeInventoryActionC2SPacket(
+            slot,
+            this
+        )
+        MC.networkHandler?.sendPacket(pkt) ?: error("Something went wrong while creating item $item")
+
+        when (gameMode) {
+            GameMode.SURVIVAL -> CommandUtils.runCommand("/gms")
+            GameMode.ADVENTURE -> CommandUtils.runCommand("/gma")
+            else -> {}
+        }
+    }
+
     fun ItemStack.loreLine(line: Int, color: Boolean, filter: (String) -> Boolean = { true }): String {
         val loreLine = get(DataComponentTypes.LORE)?.lines?.getOrNull(line)
             ?: error("Could not find lore line $line for item $this")
